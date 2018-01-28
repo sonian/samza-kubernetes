@@ -63,7 +63,8 @@ project(':example') {
     ]
 
     dockerDistTar {
-	environmentVariable('APP_HOME', '/exampleApp')
+	instruction {'RUN mkdir /exampleApp/plan'}
+	environmentVariable('EXECUTION_PLAN_DIR', '/exampleApp/plan')
     }
 
     docker {
