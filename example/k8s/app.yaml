@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-svc
+  labels:
+    app: example
+spec:
+  clusterIP: None
+  selector:
+    app: example
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: example-pdb
+spec:
+  selector:
+    matchLabels:
+      app: example
+  minAvailable: 1
+---
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: example
+spec:
+  serviceName: example-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+             - weight: 1
+               podAffinityTerm:
+                 labelSelector:
+                    matchExpressions:
+                      - key: "app"
+                        operator: In
+                        values:
+                        - zk
+                        - zookeeper
+                 topologyKey: "kubernetes.io/hostname"
+      terminationGracePeriodSeconds: 300
+      containers:
+      - name: example
+        image: example-image:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: state
+          mountPath: /state
+  volumeClaimTemplates:
+  - metadata:
+      name: state
+    spec:
+      storageClassName: standard
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 1Gi

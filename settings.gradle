@@ -1,0 +1,3 @@
+include 'lib', 'example'
+
+rootProject.name = 'samza-kubernetes'
