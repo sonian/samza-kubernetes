@@ -113,4 +113,10 @@ image locally, at which point you can run ``kubectl create -f example/k8s/app.ya
    runs the application from ``/`` and the mount point is ``/state``.
 
 
+License
+-------
+
+Licensed under the Apache License, Version 2.0.
+
+
 .. _`Kubernetes Job`: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
